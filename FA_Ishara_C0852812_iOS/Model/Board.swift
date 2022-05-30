@@ -17,8 +17,9 @@ class Board{
     var c1: Int
     var c2: Int
     var c3: Int
+    var currentTurnOwnPlayerId: Int
     
-    init(a1: Int, a2: Int, a3: Int, b1: Int, b2: Int, b3: Int, c1: Int, c2: Int, c3: Int){
+    init(a1: Int, a2: Int, a3: Int, b1: Int, b2: Int, b3: Int, c1: Int, c2: Int, c3: Int, currentTurnOwnPlayerId: Int){
         self.a1 = a1
         self.a2 = a2
         self.a3 = a3
@@ -28,6 +29,7 @@ class Board{
         self.c1 = c1
         self.c2 = c2
         self.c3 = c3
+        self.currentTurnOwnPlayerId = currentTurnOwnPlayerId
     }
 }
 

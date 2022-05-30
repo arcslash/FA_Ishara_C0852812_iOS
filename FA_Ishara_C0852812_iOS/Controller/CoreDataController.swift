@@ -5,34 +5,50 @@
 //  Created by Ishara Abeykoon on 2022-05-30.
 //
 
-import Foundation
+import UIKit
+import CoreData
 
 
-class CoreDataController : UIViewController{
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    let context = appDelegate.persistentContainer.viewContext
-    let newContact
+class CoreDataController{
     
-    
-    func initCoreData(){
+    func addBoardState(currentBoardPlacements: Board){
         
-        appDelegate = UIApplication.shared.delegate as! AppDelegate
-        context = appDelegate.persistentContainer.viewContext
-        newContact = NSEntityDescription.insertNewObject(forEntityName: "BoardModel", into: context)
-        newContact = NSEntityDescription.insertNewObject(forEntityName: "Contact", into: context)
-    }
-    
-    
-    func addBoardState(){
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let currentBoardState = NSEntityDescription.insertNewObject(forEntityName: "BoardModel", into: context)
+        currentBoardState.setValue(currentBoardPlacements.a1, forKey: "a1")
+        currentBoardState.setValue(currentBoardPlacements.a2, forKey: "a2")
+        currentBoardState.setValue(currentBoardPlacements.a3, forKey: "a3")
+        currentBoardState.setValue(currentBoardPlacements.b1, forKey: "b1")
+        currentBoardState.setValue(currentBoardPlacements.b2, forKey: "b2")
+        currentBoardState.setValue(currentBoardPlacements.b3, forKey: "b3")
+        currentBoardState.setValue(currentBoardPlacements.c1, forKey: "c1")
+        currentBoardState.setValue(currentBoardPlacements.c2, forKey: "c2")
+        currentBoardState.setValue(currentBoardPlacements.c3, forKey: "c3")
+        currentBoardState.setValue(currentBoardPlacements.currentTurnOwnPlayerId, forKey: "currentTurnOwnPlayerId")
+        do {
+            try context.save()
+        } catch {
+            print(error)
+        }
     }
     func addPlayerState(){
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        let currentBoardState = NSEntityDescription.insertNewObject(forEntityName: "PlayerModel", into: context)
+        
         
     }
-    func getBoardState(){
+    func getLastBoardState(){
         
     }
     func getPlayerState(){
+        
+    }
+    
+    func clearAllStates(){
         
     }
 }
