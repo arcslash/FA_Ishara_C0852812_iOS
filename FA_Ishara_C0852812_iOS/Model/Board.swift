@@ -31,5 +31,41 @@ class Board{
         self.c3 = c3
         self.currentTurnOwnPlayerId = currentTurnOwnPlayerId
     }
+    
+    func updateSquare(squareAddress: String, squareValue: Int){
+        if(squareAddress == "a1"){
+            a1 = squareValue
+        }
+        if(squareAddress == "a2"){
+            a2 = squareValue
+        }
+        if(squareAddress == "a3"){
+            a3 = squareValue
+        }
+        if(squareAddress == "b1"){
+            b1 = squareValue
+        }
+        if(squareAddress == "b2"){
+            b2 = squareValue
+        }
+        if(squareAddress == "b3"){
+            b3 = squareValue
+        }
+        if(squareAddress == "c1"){
+            c1 = squareValue
+        }
+        if(squareAddress == "c2"){
+            c2 = squareValue
+        }
+        if(squareAddress == "c3"){
+            c3 = squareValue
+        }
+    }
+    func viewCurrentBoard() -> [Int]{
+        return [a1, a2, a3, b1, b2, b3, c1, c2, c3]
+    }
+    func viewCurrentBoardMap() -> [String]{
+        return ["a1", "a2", "a3", "b1", "b2", "b3", "c1", "c2", "c3"]
+    }
 }
 

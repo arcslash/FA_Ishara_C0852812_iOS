@@ -10,6 +10,9 @@ import UIKit
 
 class ViewController: UIViewController
 {
+    let coreDataController: CoreDataController = CoreDataController()
+    let currentBoardState: Board = Board(a1: 0, a2: 0, a3: 0, b1: 0, b2: 0, b3: 0, c1: 0, c2: 0, c3: 0, currentTurnOwnPlayerId: 0)
+    let currentPlayerScore: Player = Player(playerOneScore: 0, playerTwoScore: 0)
     enum Turn {
         case Nought
         case Cross
@@ -40,10 +43,12 @@ class ViewController: UIViewController
     {
         super.viewDidLoad()
         initBoard()
+        initBoardAndPlayerScores()
     }
     
     func initBoard()
     {
+        
         board.append(a1)
         board.append(a2)
         board.append(a3)
@@ -53,6 +58,43 @@ class ViewController: UIViewController
         board.append(c1)
         board.append(c2)
         board.append(c3)
+    }
+    
+    // Init board in case of close back and open
+    func initBoardAndPlayerScores(){
+        var currentBoardState: Board = coreDataController.getLastBoardState()
+        var currentPlayerScore: Player = coreDataController.getPlayerState()
+        
+        noughtsScore = currentPlayerScore.playerOneScore
+        noughtsScore = currentPlayerScore.playerTwoScore
+        print("locading current board:", currentBoardState.viewCurrentBoard())
+        let boardMap = currentBoardState.viewCurrentBoardMap()
+        
+        // Update Board
+        for (index, square) in currentBoardState.viewCurrentBoard().enumerated(){
+            if(square == 1){
+                convertToSender(sender: boardMap[index]).setTitle(NOUGHT, for: .normal)
+            }else if(square == 2){
+                convertToSender(sender: boardMap[index]).setTitle(CROSS, for: .normal)
+            }
+            
+        }
+        
+    }
+    
+    func updateBoard(checkedBoxAddress: String, checkedBoxPlayer: ViewController.Turn){
+        // noghets - 1
+        // crosses - 2
+        var squareValue = 0
+        if(checkedBoxPlayer == Turn.Nought){
+            squareValue = 1
+        }
+        if(checkedBoxPlayer == Turn.Cross){
+            squareValue = 2
+        }
+        currentBoardState.updateSquare(squareAddress: checkedBoxAddress, squareValue: squareValue)
+        print(currentBoardState.viewCurrentBoard())
+        
     }
 
     @IBAction func boardTapAction(_ sender: UIButton)
@@ -167,18 +209,67 @@ class ViewController: UIViewController
         return true
     }
     
+    func recognizeSender(sender: UIButton) -> String{
+        if(sender == a1){
+            return "a1"
+        }else if(sender == a2){
+            return "a2"
+        }else if(sender == a3){
+            return "a3"
+        }else if(sender == b1){
+            return "b1"
+        }else if(sender == b2){
+            return "b2"
+        }else if(sender == b3){
+            return "b3"
+        }else if(sender == c1){
+            return "c1"
+        }else if(sender == c2){
+            return "c2"
+        }else if(sender == c3){
+            return "c3"
+        }
+        return "d1"
+    }
+    
+    func convertToSender(sender: String) -> UIButton{
+        if(sender == "a1"){
+            return a1
+        }else if(sender == "a2"){
+            return a2
+        }else if(sender == "a3"){
+            return a3
+        }else if(sender == "b1"){
+            return b1
+        }else if(sender == "b2"){
+            return b2
+        }else if(sender == "b3"){
+            return b3
+        }else if(sender == "c1"){
+            return c1
+        }else if(sender == "c2"){
+            return c2
+        }else if(sender == "c3"){
+            return c3
+        }
+        return a1
+    }
+    
     func addToBoard(_ sender: UIButton)
     {
         if(sender.title(for: .normal) == nil)
         {
             if(currentTurn == Turn.Nought)
             {
+                
+                updateBoard(checkedBoxAddress: recognizeSender(sender: sender), checkedBoxPlayer: Turn.Nought)
                 sender.setTitle(NOUGHT, for: .normal)
                 currentTurn = Turn.Cross
                 turnLabel.text = CROSS
             }
             else if(currentTurn == Turn.Cross)
             {
+                updateBoard(checkedBoxAddress:recognizeSender(sender: sender), checkedBoxPlayer: Turn.Cross)
                 sender.setTitle(CROSS, for: .normal)
                 currentTurn = Turn.Nought
                 turnLabel.text = NOUGHT
