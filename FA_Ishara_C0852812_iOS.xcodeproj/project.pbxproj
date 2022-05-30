@@ -17,6 +17,9 @@
 		47922B3A2845139100F21177 /* FA_Ishara_C0852812_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47922B392845139100F21177 /* FA_Ishara_C0852812_iOSTests.swift */; };
 		47922B442845139100F21177 /* FA_Ishara_C0852812_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47922B432845139100F21177 /* FA_Ishara_C0852812_iOSUITests.swift */; };
 		47922B462845139100F21177 /* FA_Ishara_C0852812_iOSUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47922B452845139100F21177 /* FA_Ishara_C0852812_iOSUITestsLaunchTests.swift */; };
+		47922B562845142F00F21177 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47922B552845142F00F21177 /* Player.swift */; };
+		47922B582845143E00F21177 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47922B572845143E00F21177 /* Board.swift */; };
+		47922B5B2845180E00F21177 /* CoreDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47922B5A2845180E00F21177 /* CoreDataController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +54,9 @@
 		47922B3F2845139100F21177 /* FA_Ishara_C0852812_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FA_Ishara_C0852812_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		47922B432845139100F21177 /* FA_Ishara_C0852812_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FA_Ishara_C0852812_iOSUITests.swift; sourceTree = "<group>"; };
 		47922B452845139100F21177 /* FA_Ishara_C0852812_iOSUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FA_Ishara_C0852812_iOSUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		47922B552845142F00F21177 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		47922B572845143E00F21177 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
+		47922B5A2845180E00F21177 /* CoreDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,14 +107,12 @@
 		47922B1E2845139000F21177 /* FA_Ishara_C0852812_iOS */ = {
 			isa = PBXGroup;
 			children = (
-				47922B1F2845139000F21177 /* AppDelegate.swift */,
-				47922B212845139000F21177 /* SceneDelegate.swift */,
-				47922B232845139000F21177 /* ViewController.swift */,
-				47922B252845139000F21177 /* Main.storyboard */,
+				47922B59284516BD00F21177 /* Supporting Files */,
+				47922B542845140C00F21177 /* Controller */,
+				47922B532845140600F21177 /* View */,
+				47922B52284513FE00F21177 /* Model */,
 				47922B2B2845139100F21177 /* Assets.xcassets */,
-				47922B2D2845139100F21177 /* LaunchScreen.storyboard */,
 				47922B302845139100F21177 /* Info.plist */,
-				47922B282845139000F21177 /* FA_Ishara_C0852812_iOS.xcdatamodeld */,
 			);
 			path = FA_Ishara_C0852812_iOS;
 			sourceTree = "<group>";
@@ -128,6 +132,43 @@
 				47922B452845139100F21177 /* FA_Ishara_C0852812_iOSUITestsLaunchTests.swift */,
 			);
 			path = FA_Ishara_C0852812_iOSUITests;
+			sourceTree = "<group>";
+		};
+		47922B52284513FE00F21177 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				47922B282845139000F21177 /* FA_Ishara_C0852812_iOS.xcdatamodeld */,
+				47922B552845142F00F21177 /* Player.swift */,
+				47922B572845143E00F21177 /* Board.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		47922B532845140600F21177 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				47922B252845139000F21177 /* Main.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		47922B542845140C00F21177 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				47922B232845139000F21177 /* ViewController.swift */,
+				47922B5A2845180E00F21177 /* CoreDataController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		47922B59284516BD00F21177 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				47922B2D2845139100F21177 /* LaunchScreen.storyboard */,
+				47922B1F2845139000F21177 /* AppDelegate.swift */,
+				47922B212845139000F21177 /* SceneDelegate.swift */,
+			);
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -263,7 +304,10 @@
 			files = (
 				47922B242845139000F21177 /* ViewController.swift in Sources */,
 				47922B202845139000F21177 /* AppDelegate.swift in Sources */,
+				47922B582845143E00F21177 /* Board.swift in Sources */,
+				47922B5B2845180E00F21177 /* CoreDataController.swift in Sources */,
 				47922B222845139000F21177 /* SceneDelegate.swift in Sources */,
+				47922B562845142F00F21177 /* Player.swift in Sources */,
 				47922B2A2845139000F21177 /* FA_Ishara_C0852812_iOS.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

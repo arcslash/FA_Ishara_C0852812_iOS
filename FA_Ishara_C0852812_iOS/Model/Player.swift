@@ -6,3 +6,15 @@
 //
 
 import Foundation
+
+class Player{
+    let playerId: Int
+    let playerName: String
+    var playerScore: Int
+    
+    init(playerId: Int, playerName: String, playerScore: Int){
+        self.playerId = playerId
+        self.playerName = playerName
+        self.playerScore = playerScore
+    }
+}
