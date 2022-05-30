@@ -34,10 +34,12 @@ class CoreDataController{
             print(error)
         }
     }
-    func addPlayerState(){
+    func addPlayerState(currentPlayerScoreStates: Player){
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
-        let currentBoardState = NSEntityDescription.insertNewObject(forEntityName: "PlayerModel", into: context)
+        let currentPlayersState = NSEntityDescription.insertNewObject(forEntityName: "PlayerModel", into: context)
+        currentPlayersState.setValue(currentPlayerScoreStates.playerOneScore, forKey: "playerOneScore")
+        currentPlayersState.setValue(currentPlayerScoreStates.playerTwoScore, forKey: "playerTwoScore")
         
         
     }

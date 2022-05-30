@@ -8,13 +8,11 @@
 import Foundation
 
 class Player{
-    let playerId: Int
-    let playerName: String
-    var playerScore: Int
+    let playerOneScore: Int
+    let playerTwoScore: Int
     
-    init(playerId: Int, playerName: String, playerScore: Int){
-        self.playerId = playerId
-        self.playerName = playerName
-        self.playerScore = playerScore
+    init(playerOneScore: Int, playerTwoScore: Int){
+        self.playerOneScore = playerOneScore
+        self.playerTwoScore = playerTwoScore
     }
 }
