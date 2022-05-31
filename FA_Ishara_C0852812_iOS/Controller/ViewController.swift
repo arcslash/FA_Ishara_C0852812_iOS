@@ -11,8 +11,8 @@ import UIKit
 class ViewController: UIViewController
 {
     let coreDataController: CoreDataController = CoreDataController()
-    let currentBoardState: Board = Board(a1: 0, a2: 0, a3: 0, b1: 0, b2: 0, b3: 0, c1: 0, c2: 0, c3: 0, currentTurnOwnPlayerId: 0)
-    let currentPlayerScore: Player = Player(playerOneScore: 0, playerTwoScore: 0)
+    let currentBoardState: Board = Board(boardStates: [0, 0, 0, 0, 0, 0, 0, 0, 0])
+    var currentPlayerScore: Player = Player(playerOneScore: 0, playerTwoScore: 0)
     enum Turn {
         case Nought
         case Cross
@@ -29,62 +29,108 @@ class ViewController: UIViewController
     @IBOutlet weak var c2: UIButton!
     @IBOutlet weak var c3: UIButton!
     
+    @IBOutlet weak var lblPlayer1Score: UILabel!
+    @IBOutlet weak var lblPlayer2Score: UILabel!
     var firstTurn = Turn.Cross
     var currentTurn = Turn.Cross
     
     var NOUGHT = "O"
     var CROSS = "X"
-    var board = [UIButton]()
     
     var noughtsScore = 0
     var crossesScore = 0
     
+    var lastBox: UIButton!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        self.becomeFirstResponder()
+        
         initBoard()
-        initBoardAndPlayerScores()
+        
+        let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
+        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
+                
+        leftSwipe.direction = .left
+        rightSwipe.direction = .right
+
+        view.addGestureRecognizer(leftSwipe)
+        view.addGestureRecognizer(rightSwipe)
+        
+        currentBoardState.boardStates = coreDataController.getSquareStates().boardStates
+        currentPlayerScore = coreDataController.getPlayerStates()
+        crossesScore = currentPlayerScore.playerOneScore
+        noughtsScore = currentPlayerScore.playerTwoScore
+        updateBoardStates()
+        
+        lblPlayer1Score.text = String(noughtsScore)
+        lblPlayer2Score.text = String(crossesScore)
+        
+        
+    }
+    @objc func handleSwipes(_ sender:UISwipeGestureRecognizer) {
+            
+        if (sender.direction == .left) {
+            resetGame()
+        }
+            
+        if (sender.direction == .right) {
+            resetGame()
+            
+        }
+    }
+    
+    func updateBoardStates(){
+        for (index, button) in currentBoardState.board.enumerated(){
+            if(currentBoardState.boardStates[index] == 1){
+                currentBoardState.board[index].setTitle(CROSS, for: .normal)
+            }else if(currentBoardState.boardStates[index] == 2){
+                currentBoardState.board[index].setTitle(NOUGHT, for: .normal)
+            }else if(currentBoardState.boardStates[index] == 0){
+                button.setTitle(nil, for: .normal)
+            }
+        }
     }
     
     func initBoard()
     {
         
-        board.append(a1)
-        board.append(a2)
-        board.append(a3)
-        board.append(b1)
-        board.append(b2)
-        board.append(b3)
-        board.append(c1)
-        board.append(c2)
-        board.append(c3)
+        currentBoardState.add(square: a1)
+        currentBoardState.add(square: a2)
+        currentBoardState.add(square: a3)
+        currentBoardState.add(square: b1)
+        currentBoardState.add(square: b2)
+        currentBoardState.add(square: b3)
+        currentBoardState.add(square: c1)
+        currentBoardState.add(square: c2)
+        currentBoardState.add(square: c3)
     }
     
-    // Init board in case of close back and open
-    func initBoardAndPlayerScores(){
-        var currentBoardState: Board = coreDataController.getLastBoardState()
-        var currentPlayerScore: Player = coreDataController.getPlayerState()
-        
-        noughtsScore = currentPlayerScore.playerOneScore
-        noughtsScore = currentPlayerScore.playerTwoScore
-        print("locading current board:", currentBoardState.viewCurrentBoard())
-        let boardMap = currentBoardState.viewCurrentBoardMap()
-        
-        // Update Board
-        for (index, square) in currentBoardState.viewCurrentBoard().enumerated(){
-            if(square == 1){
-                convertToSender(sender: boardMap[index]).setTitle(NOUGHT, for: .normal)
-            }else if(square == 2){
-                convertToSender(sender: boardMap[index]).setTitle(CROSS, for: .normal)
-            }
-            
+    
+    // We are willing to become first responder to get shake motion
+    override var canBecomeFirstResponder: Bool {
+        get {
+            return true
         }
-        
     }
-    
+
+    // Enable detection of shake motion
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if motion == .motionShake && lastBox != nil{
+            lastBox.setTitle(nil, for: .normal)
+            if(currentTurn == Turn.Cross){
+                currentTurn = Turn.Nought
+                turnLabel.text = NOUGHT
+            }else if(currentTurn == Turn.Nought){
+                currentTurn = Turn.Cross
+                turnLabel.text = CROSS
+            }
+        }
+    }
+
+
     func updateBoard(checkedBoxAddress: String, checkedBoxPlayer: ViewController.Turn){
-        // noghets - 1
-        // crosses - 2
         var squareValue = 0
         if(checkedBoxPlayer == Turn.Nought){
             squareValue = 1
@@ -92,9 +138,6 @@ class ViewController: UIViewController
         if(checkedBoxPlayer == Turn.Cross){
             squareValue = 2
         }
-        currentBoardState.updateSquare(squareAddress: checkedBoxAddress, squareValue: squareValue)
-        print(currentBoardState.viewCurrentBoard())
-        
     }
 
     @IBAction func boardTapAction(_ sender: UIButton)
@@ -104,19 +147,20 @@ class ViewController: UIViewController
         if checkForVictory(CROSS)
         {
             crossesScore += 1
-            resultAlert(title: "Crosses Win!")
+            resultAlert(title: "Player 1 Win!")
         }
         
         if checkForVictory(NOUGHT)
         {
             noughtsScore += 1
-            resultAlert(title: "Noughts Win!")
+            resultAlert(title: "Player 2 Win!")
         }
         
         if(fullBoard())
         {
             resultAlert(title: "Draw")
         }
+        coreDataController.storePlayerStates(playerScores: currentPlayerScore)
     }
     
     func checkForVictory(_ s :String) -> Bool
@@ -169,19 +213,32 @@ class ViewController: UIViewController
     
     func resultAlert(title: String)
     {
-        let message = "\nNoughts " + String(noughtsScore) + "\n\nCrosses " + String(crossesScore)
+        let message = "\nCrosses (Player 2) " + String(crossesScore) + "\n\nNoughts (Player 1) " + String(noughtsScore)
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        lblPlayer1Score.text = String(noughtsScore)
+        lblPlayer2Score.text = String(crossesScore)
         ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in
             self.resetBoard()
         }))
         self.present(ac, animated: true)
     }
     
+    func resetGame(){
+        resetBoard()
+        noughtsScore = 0
+        crossesScore = 0
+        coreDataController.storePlayerStates(playerScores: Player( playerOneScore:crossesScore, playerTwoScore: noughtsScore))
+        lblPlayer1Score.text = String(crossesScore)
+        lblPlayer2Score.text = String(noughtsScore)
+
+    }
+    
     func resetBoard()
     {
-        for button in board
+        for button in currentBoardState.board
         {
             button.setTitle(nil, for: .normal)
+            button.backgroundColor = .white
             button.isEnabled = true
         }
         if firstTurn == Turn.Nought
@@ -195,11 +252,13 @@ class ViewController: UIViewController
             turnLabel.text = NOUGHT
         }
         currentTurn = firstTurn
+        currentBoardState.boardStates = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        coreDataController.storeSquareStates(currentBoardStates: currentBoardState)
     }
     
     func fullBoard() -> Bool
     {
-        for button in board
+        for button in currentBoardState.board
         {
             if button.title(for: .normal) == nil
             {
@@ -209,75 +268,47 @@ class ViewController: UIViewController
         return true
     }
     
-    func recognizeSender(sender: UIButton) -> String{
-        if(sender == a1){
-            return "a1"
-        }else if(sender == a2){
-            return "a2"
-        }else if(sender == a3){
-            return "a3"
-        }else if(sender == b1){
-            return "b1"
-        }else if(sender == b2){
-            return "b2"
-        }else if(sender == b3){
-            return "b3"
-        }else if(sender == c1){
-            return "c1"
-        }else if(sender == c2){
-            return "c2"
-        }else if(sender == c3){
-            return "c3"
+    func getCurrentBoardState(){
+        for (index, button) in currentBoardState.board.enumerated(){
+            if(button.titleLabel!.text == CROSS){
+                currentBoardState.boardStates[index] = 1
+            }else if(button.titleLabel!.text == NOUGHT){
+                currentBoardState.boardStates[index] = 2
+            }else if(button.titleLabel!.text == nil){
+                currentBoardState.boardStates[index] = 0
+            }
         }
-        return "d1"
+        coreDataController.storeSquareStates(currentBoardStates: currentBoardState)
     }
-    
-    func convertToSender(sender: String) -> UIButton{
-        if(sender == "a1"){
-            return a1
-        }else if(sender == "a2"){
-            return a2
-        }else if(sender == "a3"){
-            return a3
-        }else if(sender == "b1"){
-            return b1
-        }else if(sender == "b2"){
-            return b2
-        }else if(sender == "b3"){
-            return b3
-        }else if(sender == "c1"){
-            return c1
-        }else if(sender == "c2"){
-            return c2
-        }else if(sender == "c3"){
-            return c3
-        }
-        return a1
-    }
-    
+   
     func addToBoard(_ sender: UIButton)
     {
+        
+        lastBox = sender
         if(sender.title(for: .normal) == nil)
         {
             if(currentTurn == Turn.Nought)
             {
-                
-                updateBoard(checkedBoxAddress: recognizeSender(sender: sender), checkedBoxPlayer: Turn.Nought)
                 sender.setTitle(NOUGHT, for: .normal)
+                sender.backgroundColor = .red
                 currentTurn = Turn.Cross
                 turnLabel.text = CROSS
+                turnLabel.textColor = .blue
             }
             else if(currentTurn == Turn.Cross)
             {
-                updateBoard(checkedBoxAddress:recognizeSender(sender: sender), checkedBoxPlayer: Turn.Cross)
                 sender.setTitle(CROSS, for: .normal)
+                sender.backgroundColor = .blue
                 currentTurn = Turn.Nought
                 turnLabel.text = NOUGHT
+                turnLabel.textColor = .red
             }
             sender.isEnabled = false
         }
+        getCurrentBoardState()
     }
     
 }
+
 
 
